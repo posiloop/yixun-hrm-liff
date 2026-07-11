@@ -14,7 +14,6 @@ header{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:
 header img{height:28px;}
 header .t{font-size:17px;font-weight:800;}
 header .role{margin-left:auto;font-size:12px;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;white-space:nowrap;}
-header .gear{background:none;border:none;color:#fff;font-size:18px;padding:2px 4px;}
 .body{padding:14px;}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;}
 .sec{font-weight:800;color:var(--g);font-size:15px;margin:2px 0 12px;display:flex;align-items:center;gap:7px;}
@@ -25,6 +24,8 @@ input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line
 textarea{min-height:90px;resize:vertical;}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--g2);}
 input.bad{border-color:var(--err);background:#fdf3f3;}
+input.miss{border-color:#f0c5c0;background:#fdf1f0;}
+.miss-tag{font-size:10.5px;color:var(--err);background:#fdecea;border-radius:10px;padding:1px 8px;margin-left:6px;font-weight:700;}
 .hint{font-size:11.5px;color:var(--muted);margin-top:4px;}
 .row2{display:flex;gap:10px;}.row2>div{flex:1;}
 .btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--g);color:#fff;font-size:16px;font-weight:800;margin-top:8px;font-family:inherit;}
@@ -40,12 +41,13 @@ input.bad{border-color:var(--err);background:#fdf3f3;}
 .chip{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--muted);font-family:inherit;}
 .chip.on{background:var(--g);border-color:var(--g);color:#fff;}
 .post{background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px 15px;margin-bottom:10px;}
-.post.pin{border-color:#e8d9a8;background:#fffdf4;}
-.post .pt{font-weight:800;font-size:15.5px;display:flex;gap:6px;align-items:center;}
+.post .pt{font-weight:800;font-size:15.5px;}
 .post .pm{font-size:11.5px;color:var(--muted);margin:3px 0 8px;letter-spacing:.3px;}
 .post .pb{font-size:14px;white-space:pre-wrap;color:#2c362b;}
 .post .tag{font-size:10.5px;background:#eef4ec;color:var(--g);border-radius:12px;padding:1px 8px;font-weight:700;}
 .post .tools{margin-top:10px;display:flex;gap:8px;}
+.post.sortable{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;}
+.post.sortable.drag{opacity:.75;box-shadow:0 10px 22px rgba(0,0,0,.18);position:relative;z-index:5;}
 .emp{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:11px;margin-bottom:8px;background:#fff;}
 .emp .av{width:38px;height:38px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
 .emp .info{flex:1;min-width:0;}.emp .nm{font-weight:700;}.emp .meta{font-size:12px;color:var(--muted);}
@@ -69,6 +71,13 @@ input.bad{border-color:var(--err);background:#fdf3f3;}
 .hide{display:none!important;}
 .set-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);gap:8px;}
 .set-row:last-child{border-bottom:none;}
+.stg-full{background:#fafdf9;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;}
+.stg-full .fr{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+.stg-full .fr:last-child{border-bottom:none;}
+.stg-full .fk{color:var(--muted);flex-shrink:0;}
+.stg-full .fr.diff{background:#fff3cd;border-radius:8px;padding:6px 8px;border-bottom:none;}
+.stg-full .fr.diff .fv b{color:var(--g);}
+.stg-full .fr.diff .old{color:var(--err);text-decoration:line-through;margin-right:6px;}
 </style>
 </head>
 <body>
@@ -76,7 +85,6 @@ input.bad{border-color:var(--err);background:#fdf3f3;}
   <header>
     <img src="logo.png" onerror="this.style.display='none'" alt="">
     <div class="t">益循生活員工系統</div>
-    <button class="gear hide" id="gearBtn" onclick="go('settings')">⚙️</button>
     <div class="role" id="roleTag"></div>
   </header>
   <div class="body" id="app"></div>
@@ -86,6 +94,7 @@ input.bad{border-color:var(--err);background:#fdf3f3;}
   <button data-t="board" class="on" onclick="go('board')"><span class="i">📢</span>佈告欄</button>
   <button data-t="profile" onclick="go('profile')"><span class="i">📝</span>我的資料</button>
   <button data-t="payslip" onclick="go('payslip')"><span class="i">💰</span>薪資條</button>
+  <button data-t="settings" id="setTab" class="hide" onclick="go('settings')"><span class="i">⚙️</span>設定</button>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -117,9 +126,9 @@ const DB = {
     {userId:"U_demo_emp", 工號:"E24P0506", 姓名:"王小明", 角色:"員工", 分級:["鴻海"], 管轄:[]},
   ],
   bulletins: [
-    {id:"b0003", 分級:["鴻海"], 標題:"鴻海店本週班表已出", 內文:"請至打卡系統確認本週班表，如需調班請於週三前告知店長。", 發佈人:"楊巧鈺", 置頂:false, 狀態:"published", 時間:"2026-07-10 18:00"},
-    {id:"b0002", 分級:["中科","鴻海","總部"], 標題:"7月薪資發放時間", 內文:"7月薪資預計 8/10 前入帳，薪資條屆時可在本系統「💰薪資條」查看。", 發佈人:"盧建全", 置頂:true, 狀態:"published", 時間:"2026-07-09 10:00"},
-    {id:"b0001", 分級:["中科","鴻海","總部"], 標題:"歡迎使用益循生活員工系統", 內文:"佈告欄上線囉！之後公司公告都會發在這裡，記得常來看看 😊", 發佈人:"系統", 置頂:false, 狀態:"published", 時間:"2026-07-10 00:00"},
+    {id:"b0002", 分級:["中科","鴻海","總部"], 標題:"7月薪資發放時間", 內文:"7月薪資預計 8/10 前入帳，薪資條屆時可在本系統「💰薪資條」查看。", 發佈人:"盧建全", 狀態:"published", 時間:"2026-07-09 10:00"},
+    {id:"b0003", 分級:["鴻海"], 標題:"鴻海店本週班表已出", 內文:"請至打卡系統確認本週班表，如需調班請於週三前告知店長。", 發佈人:"楊巧鈺", 狀態:"published", 時間:"2026-07-10 18:00"},
+    {id:"b0001", 分級:["中科","鴻海","總部"], 標題:"歡迎使用益循生活員工系統", 內文:"佈告欄上線囉！之後公司公告都會發在這裡，記得常來看看 😊", 發佈人:"系統", 狀態:"published", 時間:"2026-07-10 00:00"},
   ],
   roster: [
     {employee_id:"E24P0506", name:"王小明", 分級:"鴻海", title:"廚助", employment_type:"兼職", done:true},
@@ -128,6 +137,14 @@ const DB = {
     {employee_id:"E25T0729", name:"楊巧鈺", 分級:"鴻海", title:"店長", employment_type:"正職", done:true},
     {employee_id:"E26T1020", name:"陳怡安", 分級:"中科", title:"儲備幹部", employment_type:"正職", done:true},
   ],
+  // 員工完整資料（示範；正式版=employees.json）
+  details: {
+    E24P0506:{name:"王小明",national_id:"F1********",dob:"1999-05-06",phone:"0912345678",email:"ming@example.com",address:"新北市土城區明德路一段 100 號",ec_name:"王媽媽",ec_relation:"母",ec_phone:"0933111222",bank_name:"國泰世華銀行",account_number:"013000111222",hire_date:"2026-04-01",employment_type:"兼職",title:"廚助",分級:"鴻海",salary:"時薪 190",insurance:"勞保 11100／健保 29500"},
+    E26K0110:{name:"李小華",phone:"0955666777",分級:"鴻海",title:"廚助",employment_type:"兼職",hire_date:"2026-06-20"},
+    E25K0312:{name:"林志豪",分級:"中科",title:"廚助",employment_type:"兼職"},
+    E25T0729:{name:"楊巧鈺",national_id:"A2********",dob:"1996-07-21",phone:"0922333444",email:"chiao@example.com",address:"台中市西屯區文心路 50 號",ec_name:"楊爸爸",ec_relation:"父",ec_phone:"0910222333",bank_name:"玉山銀行",account_number:"808111222333",hire_date:"2025-07-21",employment_type:"正職",title:"店長",分級:"鴻海",salary:"月薪 45,000",insurance:"勞保 45800／健保 45800"},
+    E26T1020:{name:"陳怡安",national_id:"B2********",dob:"1998-10-20",phone:"0966777888",email:"yian@example.com",address:"台中市北屯區崇德路 88 號",ec_name:"陳媽媽",ec_relation:"母",ec_phone:"0955444333",bank_name:"國泰世華銀行",account_number:"013555666777",hire_date:"2026-01-05",employment_type:"正職",title:"儲備幹部",分級:"中科",salary:"月薪 45,000",insurance:"勞保 45800／健保 45800"},
+  },
   payslips: {
     "E24P0506": [
       {ym:"2026-06", net:18240, items:{"時薪工資":17600,"平日加班費":640}, deduct:{"勞保費":392,"健保費":0}, note:"特休：24 hr（2026-11 到期）"},
@@ -140,9 +157,18 @@ const DB = {
     pin_required_payslip: true,
   },
   staging: [
-    {id:"s0001", 工號:"E24P0506", 姓名:"王小明", 欄位:"phone", 舊值:"0912345678", 新值:"0987654321", 狀態:"待審", 時間:"2026-07-10 20:11"},
+    {id:"s0001", 工號:"E24P0506", 姓名:"王小明", 欄位:"phone", 欄位名:"手機", 舊值:"0912345678", 新值:"0987654321", 狀態:"待審", 時間:"2026-07-10 20:11"},
   ],
 };
+
+// 員工資料欄位定義（展開檢視用；key 對應 details）
+const FIELD_DEFS = [
+  {sec:"基本資料", fields:[["姓名","name"],["身分證字號","national_id"],["出生年月日","dob"],["手機","phone"],["Email","email"],["戶籍/通訊地址","address"]]},
+  {sec:"緊急聯絡人", fields:[["姓名","ec_name"],["關係","ec_relation"],["聯絡電話","ec_phone"]]},
+  {sec:"任職資訊", fields:[["到職日","hire_date"],["聘用別","employment_type"],["分級","分級"],["職稱","title"]]},
+  {sec:"薪轉帳戶", fields:[["銀行","bank_name"],["帳號","account_number"]]},
+  {sec:"薪資／投保（僅管理員）", adminOnly:true, fields:[["薪資","salary"],["投保","insurance"]]},
+];
 
 const DEMO_IDENTITY = {
   employee: {userId:"U_demo_emp", name:"王小明", 工號:"E24P0506", role:"員工", sites:["鴻海"]},
@@ -152,7 +178,8 @@ const DEMO_IDENTITY = {
 
 let state = { tab:"board", devRole:"employee", me:DEMO_IDENTITY.employee,
   pinOk:false, pinBuf:"", pinStage:null, pinTmp:"", savedPin:"",
-  composing:false, editingPost:null, viewSlip:null, editingEmp:null, boardSite:"ALL" };
+  composing:false, editingPost:null, reordering:false, viewSlip:null, editingEmp:null,
+  boardSite:"ALL", expandedStaging:null };
 
 // ================= 工具 =================
 const $=(s)=>document.querySelector(s);
@@ -163,12 +190,14 @@ function isMgr(){return state.me.role==="主管";}
 
 function setRole(r){
   state.devRole=r; state.me=DEMO_IDENTITY[r];
-  state.pinOk=false; state.composing=false; state.editingPost=null; state.viewSlip=null; state.editingEmp=null;
+  state.pinOk=false; state.composing=false; state.editingPost=null; state.reordering=false;
+  state.viewSlip=null; state.editingEmp=null; state.expandedStaging=null;
   if(state.tab==="settings"&&!isAdmin())state.tab="board";
   render();
 }
 function go(t){
-  state.tab=t; state.composing=false; state.editingPost=null; state.viewSlip=null; state.editingEmp=null;
+  state.tab=t; state.composing=false; state.editingPost=null; state.reordering=false;
+  state.viewSlip=null; state.editingEmp=null; state.expandedStaging=null;
   render();
 }
 
@@ -176,10 +205,11 @@ function go(t){
 function render(){
   $("#roleTag").textContent = `${state.me.name}・${state.me.role}`;
   $("#devRole").value=state.devRole;
-  $("#gearBtn").classList.toggle("hide", !isAdmin());
+  $("#setTab").classList.toggle("hide", !isAdmin());
   document.querySelectorAll(".tabbar button").forEach(b=>b.classList.toggle("on", b.dataset.t===state.tab));
   const v = { board:boardView, profile:profileView, payslip:payslipView, settings:settingsView }[state.tab] || boardView;
   $("#app").innerHTML = v();
+  if(state.reordering)bindSort();
 }
 
 // ================= 📢 佈告欄 =================
@@ -187,34 +217,90 @@ function visiblePosts(){
   return DB.bulletins
     .filter(p=>p.狀態==="published")
     .filter(p=>isAdmin() ? (state.boardSite==="ALL"||p.分級.includes(state.boardSite))
-                         : p.分級.some(s=>state.me.sites.includes(s)))
-    .sort((a,b)=>(b.置頂-a.置頂)||(b.時間>a.時間?1:-1));
+                         : p.分級.some(s=>state.me.sites.includes(s)));
 }
 function boardView(){
   if(state.composing)return composeView();
+  if(state.reordering)return reorderView();
   const posts=visiblePosts();
   const canPost=isAdmin()||isMgr();
   const siteChips=isAdmin()?`<div class="chip-row" style="margin-bottom:10px">
     ${["ALL",...SITES].map(s=>`<button class="chip ${state.boardSite===s?'on':''}" onclick="state.boardSite='${s}';render()">${s==="ALL"?"全部":s}</button>`).join("")}
   </div>`:"";
   return `
-  ${canPost?`<button class="btn" style="margin-bottom:12px" onclick="state.composing=true;state.editingPost=null;render()">＋ 發佈新公告</button>`:""}
+  ${canPost?`<div class="row2" style="margin-bottom:12px">
+    <div><button class="btn" style="margin:0" onclick="state.composing=true;state.editingPost=null;render()">＋ 發佈新公告</button></div>
+    <div><button class="btn sec" style="margin:0" onclick="state.reordering=true;render()">↕️ 編輯排序</button></div>
+  </div>`:""}
   ${siteChips}
   ${posts.length?posts.map(postCard).join(""):'<div class="note">目前沒有公告</div>'}
   <div class="hint" style="text-align:center;margin-top:6px">你看到的是：${isAdmin()?(state.boardSite==="ALL"?"全部分級":state.boardSite):state.me.sites.join("、")} 的公告</div>`;
 }
 function postCard(p){
   const canEdit=isAdmin()||(isMgr()&&p.分級.some(s=>state.me.sites.includes(s)));
-  return `<div class="post ${p.置頂?'pin':''}">
-    <div class="pt">${p.置頂?'📌 ':''}${esc(p.標題)}</div>
+  return `<div class="post">
+    <div class="pt">${esc(p.標題)}</div>
     <div class="pm">${p.分級.map(s=>`<span class="tag">${s}</span>`).join(" ")}　${esc(p.發佈人)}・${p.時間}</div>
     <div class="pb">${esc(p.內文)}</div>
     ${canEdit?`<div class="tools">
       <button class="btn sec sm" onclick="editPost('${p.id}')">✎ 編輯</button>
-      <button class="btn sec sm" onclick="togglePin('${p.id}')">${p.置頂?'取消置頂':'📌 置頂'}</button>
       <button class="btn warn sm" onclick="archivePost('${p.id}')">下架</button>
     </div>`:""}
   </div>`;
+}
+// ---- 拖曳排序 ----
+function reorderView(){
+  const posts=visiblePosts();
+  return `
+  <div class="note">↕️ 按住卡片直接上下拖曳調整順序，調好按「儲存排序」。</div>
+  <div id="sortList">${posts.map(p=>`
+    <div class="post sortable" data-id="${p.id}">
+      <div class="pt">☰　${esc(p.標題)}</div>
+      <div class="pm">${p.分級.map(s=>`<span class="tag">${s}</span>`).join(" ")}　${esc(p.發佈人)}</div>
+    </div>`).join("")}</div>
+  <button class="btn" onclick="saveOrder()">儲存排序</button>
+  <button class="btn sec" onclick="state.reordering=false;render()">取消</button>`;
+}
+function bindSort(){
+  const list=$("#sortList");
+  if(!list)return;
+  let dragEl=null,startY=0;
+  list.querySelectorAll(".sortable").forEach(el=>{
+    el.addEventListener("pointerdown",e=>{
+      dragEl=el;startY=e.clientY;
+      el.classList.add("drag");el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener("pointermove",e=>{
+      if(!dragEl)return;
+      dragEl.style.transform=`translateY(${e.clientY-startY}px)`;
+      const dr=dragEl.getBoundingClientRect();
+      const dmid=dr.top+dr.height/2;
+      for(const s of [...list.children].filter(x=>x!==dragEl)){
+        const r=s.getBoundingClientRect();
+        const mid=r.top+r.height/2;
+        if(dmid<mid && s.compareDocumentPosition(dragEl)&Node.DOCUMENT_POSITION_FOLLOWING){
+          list.insertBefore(dragEl,s);startY=e.clientY;dragEl.style.transform="";break;
+        }
+        if(dmid>mid && s.compareDocumentPosition(dragEl)&Node.DOCUMENT_POSITION_PRECEDING){
+          list.insertBefore(dragEl,s.nextSibling);startY=e.clientY;dragEl.style.transform="";break;
+        }
+      }
+    });
+    const up=()=>{
+      if(!dragEl)return;
+      dragEl.style.transform="";dragEl.classList.remove("drag");dragEl=null;
+    };
+    el.addEventListener("pointerup",up);
+    el.addEventListener("pointercancel",up);
+  });
+}
+function saveOrder(){
+  const ids=[...document.querySelectorAll("#sortList .sortable")].map(el=>el.dataset.id);
+  const inSet=new Set(ids);
+  const rest=DB.bulletins.filter(p=>!inSet.has(p.id));
+  DB.bulletins=[...ids.map(id=>DB.bulletins.find(p=>p.id===id)),...rest];
+  state.reordering=false;render();
+  toast("排序已儲存 ✓（示範模式：正式版寫回佈告欄分頁順序欄）");
 }
 function composeView(){
   const p=state.editingPost?DB.bulletins.find(x=>x.id===state.editingPost):null;
@@ -228,9 +314,6 @@ function composeView(){
     <div class="chip-row">${mySites.map(s=>`<button class="chip ${sel.includes(s)?'on':''}" data-site="${s}" onclick="this.classList.toggle('on')">${s}</button>`).join("")}</div>
     <label>標題<span class="req">＊</span></label><input id="postTitle" value="${p?esc(p.標題):''}">
     <label>內文<span class="req">＊</span></label><textarea id="postBody">${p?esc(p.內文):''}</textarea>
-    <div class="set-row" style="border:none;margin-top:6px">
-      <div>📌 置頂</div><input type="checkbox" id="postPin" style="width:auto;transform:scale(1.3)" ${p&&p.置頂?"checked":""}>
-    </div>
     <div class="set-row" style="border:none">
       <div>📲 發佈後 LINE 推播給對象分級員工</div><input type="checkbox" id="postPush" style="width:auto;transform:scale(1.3)">
     </div>
@@ -242,18 +325,17 @@ function savePost(){
   const title=$("#postTitle").value.trim(), body=$("#postBody").value.trim();
   if(!sites.length){toast("至少選一個分級");return;}
   if(!title||!body){toast("標題與內文必填");return;}
-  const push=$("#postPush").checked, pin=$("#postPin").checked;
+  const push=$("#postPush").checked;
   if(state.editingPost){
     const p=DB.bulletins.find(x=>x.id===state.editingPost);
-    Object.assign(p,{分級:sites,標題:title,內文:body,置頂:pin});
+    Object.assign(p,{分級:sites,標題:title,內文:body});
   }else{
-    DB.bulletins.unshift({id:"b"+Date.now(),分級:sites,標題:title,內文:body,發佈人:state.me.name,置頂:pin,狀態:"published",時間:new Date().toISOString().slice(0,16).replace("T"," ")});
+    DB.bulletins.unshift({id:"b"+Date.now(),分級:sites,標題:title,內文:body,發佈人:state.me.name,狀態:"published",時間:new Date().toISOString().slice(0,16).replace("T"," ")});
   }
   state.composing=false;state.editingPost=null;render();
   toast(push?"已發佈 ✓（示範模式：正式版會 LINE 推播給 "+sites.join("、")+"）":"已發佈 ✓");
 }
 function editPost(id){state.editingPost=id;state.composing=true;render();}
-function togglePin(id){const p=DB.bulletins.find(x=>x.id===id);p.置頂=!p.置頂;render();}
 function archivePost(id){const p=DB.bulletins.find(x=>x.id===id);p.狀態="archived";render();toast("已下架");}
 
 // ================= 📝 我的資料 =================
@@ -264,81 +346,112 @@ function profileView(){
 }
 function empFormView(){
   const vis=DB.settings.field_visibility_employee;
+  const d=DB.details[state.me.工號]||{};
   return `
   <div class="note">📋 填寫／更新您的個人資料。送出後會進入審核，管理員核准才正式生效。</div>
   ${vis.includes("基本資料")?card("👤","基本資料",`
-    ${field("姓名","f_name","text","王小明",true)}
-    ${field("身分證字號","f_id","text","",true,"輸入後自動檢核")}
-    ${field("出生年月日","f_dob","text","",true,"民國或西元皆可")}
-    <div class="row2"><div>${field("手機","f_phone","tel","0912345678",true)}</div><div>${field("Email","f_email","email","",true)}</div></div>
-    ${field("戶籍/通訊地址","f_addr","text","",true)}
+    ${field("姓名","f_name","text",d.name,true)}
+    ${field("身分證字號","f_id","text",d.national_id,true,"輸入後自動檢核")}
+    ${field("出生年月日","f_dob","text",d.dob,true,"民國或西元皆可")}
+    <div class="row2"><div>${field("手機","f_phone","tel",d.phone,true)}</div><div>${field("Email","f_email","email",d.email,true)}</div></div>
+    ${field("戶籍/通訊地址","f_addr","text",d.address,true)}
   `):""}
   ${vis.includes("緊急聯絡人")?card("🆘","緊急聯絡人",`
-    <div class="row2"><div>${field("姓名","f_ecn","text","",true)}</div><div>${field("關係","f_ecr","text","",true)}</div></div>
-    ${field("聯絡電話","f_ecp","tel","",true)}
+    <div class="row2"><div>${field("姓名","f_ecn","text",d.ec_name,true)}</div><div>${field("關係","f_ecr","text",d.ec_relation,true)}</div></div>
+    ${field("聯絡電話","f_ecp","tel",d.ec_phone,true)}
   `):""}
   ${vis.includes("薪轉帳戶")?card("🏦","薪轉帳戶",`
     <div class="row2"><div><label>銀行<span class="req">＊</span></label>
       <select id="f_bank"><option>國泰世華銀行</option><option>玉山銀行</option><option>元大銀行</option><option>中國信託</option><option>郵局</option></select>
     </div><div>${field("分行","f_branch","text","",false)}</div></div>
-    ${field("帳號","f_acct","text","",true,"純數字")}
+    ${field("帳號","f_acct","text",d.account_number,true,"純數字")}
   `):""}
   ${vis.includes("證件上傳")?card("📎","證件上傳",`<div class="hint">身分證正反面／存摺封面／體檢報告（正式版可拍照上傳，示範模式略）</div>`):""}
   <button class="btn" onclick="toast('已送出審核 ✓（示範模式：正式版進入 待審 → 管理員核准 → 寫入 employees.json）')">送出（進入審核）</button>`;
 }
 function mgrProfileView(){
   if(state.editingEmp)return empDetailView();
-  const mine=DB.roster.filter(r=>state.me.sites.includes(r.分級)&&r.employee_id!==state.me.工號);
+  const mine=DB.roster.filter(r=>state.me.sites.includes(r.分級));   // 含自己
   return `
-  <div class="note">👥 你管轄的員工（分級：${state.me.sites.join("、")}）。可查看與代為更新資料，異動同樣走管理員審核。</div>
-  ${mine.map(empRow).join("")||'<div class="hint">無管轄員工</div>'}`;
+  <div class="note">👥 你管轄的員工（分級：${state.me.sites.join("、")}，含你自己）。點開可查看資料，異動走管理員審核。</div>
+  ${mine.map(e=>empRow(e,e.employee_id===state.me.工號)).join("")||'<div class="hint">無管轄員工</div>'}`;
 }
 function adminProfileView(){
   if(state.editingEmp)return empDetailView();
   const pending=DB.staging.filter(s=>s.狀態==="待審");
   return `
-  ${pending.length?card("🔔","待審核異動（"+pending.length+"）",pending.map(s=>`
-    <div class="set-row">
-      <div><b>${s.姓名}</b> <span class="hint">${s.欄位}：${esc(s.舊值)} → <b style="color:var(--g)">${esc(s.新值)}</b>・${s.時間}</span></div>
-      <div style="display:flex;gap:6px">
+  ${pending.length?card("🔔","待審核異動（"+pending.length+"）",pending.map(stagingRow).join("")):""}
+  <div class="note">✅ 核准後由系統自動寫入 employees.json（正本）並留存紀錄。</div>
+  <input class="search" placeholder="🔍 搜尋姓名" style="margin-bottom:10px" oninput="filterRoster(this.value)">
+  <div id="roster">${DB.roster.map(e=>empRow(e,false)).join("")}</div>`;
+}
+function stagingRow(s){
+  const open=state.expandedStaging===s.id;
+  return `
+    <div class="set-row" style="flex-wrap:wrap">
+      <div style="flex:1;min-width:0"><b>${s.姓名}</b> <span class="hint">${s.欄位名}：<span style="color:var(--err);text-decoration:line-through">${esc(s.舊值)}</span> → <b style="color:var(--g)">${esc(s.新值)}</b>・${s.時間}</span></div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn sec sm" onclick="state.expandedStaging=${open?'null':`'${s.id}'`};render()">${open?"收合":"展開全部資料"}</button>
         <button class="btn sm" onclick="approveStaging('${s.id}',true)">核准</button>
         <button class="btn warn sm" onclick="approveStaging('${s.id}',false)">退回</button>
       </div>
-    </div>`).join("")):""}
-  <div class="note">✅ 核准後由系統自動寫入 employees.json（正本）並留存紀錄。</div>
-  <input class="search" placeholder="🔍 搜尋姓名" style="margin-bottom:10px" oninput="filterRoster(this.value)">
-  <div id="roster">${DB.roster.map(empRow).join("")}</div>`;
+      ${open?`<div class="stg-full" style="width:100%">${fullRecordHtml(s.工號,s.欄位,s.舊值,s.新值)}</div>`:""}
+    </div>`;
 }
-function empRow(e){
+// 完整資料展開（異動欄位標黃、顯示 舊→新）
+function fullRecordHtml(empId,changedKey,oldV,newV){
+  const d=DB.details[empId]||{};
+  const rows=[];
+  FIELD_DEFS.forEach(g=>{
+    g.fields.forEach(([lbl,key])=>{
+      const isDiff=key===changedKey;
+      const val=d[key];
+      rows.push(`<div class="fr ${isDiff?'diff':''}">
+        <span class="fk">${lbl}</span>
+        <span class="fv">${isDiff?`<span class="old">${esc(oldV)}</span><b>${esc(newV)}</b>`:(val?esc(val):'<span class="miss-tag">未填寫</span>')}</span>
+      </div>`);
+    });
+  });
+  return rows.join("");
+}
+function empRow(e,isSelf){
   return `<div class="emp" onclick="state.editingEmp='${e.employee_id}';render()">
     <div class="av">${e.name[0]}</div>
-    <div class="info"><div class="nm">${e.name} <span class="badge">${e.employment_type}</span></div>
+    <div class="info"><div class="nm">${e.name}${isSelf?' <span class="badge amber">我</span>':''} <span class="badge">${e.employment_type}</span></div>
       <div class="meta">${e.分級}・${e.title}・${e.employee_id}</div></div>
     ${e.done?'<span class="badge">已填</span>':'<span class="badge warn">待填</span>'}
     <div style="color:#bbb">›</div></div>`;
 }
 function filterRoster(q){
   q=q.trim();
-  $("#roster").innerHTML=DB.roster.filter(e=>!q||e.name.includes(q)).map(empRow).join("")||'<div class="hint" style="text-align:center;padding:16px">無符合</div>';
+  $("#roster").innerHTML=DB.roster.filter(e=>!q||e.name.includes(q)).map(e=>empRow(e,false)).join("")||'<div class="hint" style="text-align:center;padding:16px">無符合</div>';
 }
+// 員工資料展開檢視：管理員=全部欄位；主管=可見度設定內的區塊；未填=淡紅提示
 function empDetailView(){
   const e=DB.roster.find(x=>x.employee_id===state.editingEmp)||{};
+  const d=DB.details[state.editingEmp]||{};
   const vis=isAdmin()?null:DB.settings.field_visibility_manager;
-  const show=(k)=>!vis||vis.includes(k);
+  const secs=FIELD_DEFS.filter(g=>{
+    if(g.adminOnly)return isAdmin();
+    return !vis||vis.includes(g.sec);
+  });
   return `
   <button class="btn sec" style="margin-bottom:12px" onclick="state.editingEmp=null;render()">← 返回名單</button>
-  ${show("基本資料")?card("👤","基本資料",`<div class="hint">姓名：${e.name}｜工號：${e.employee_id}｜分級：${e.分級}｜身分證：＊保護＊</div>`):""}
-  ${show("任職資訊")?card("🧾","任職資訊",`
-    <div class="row2"><div>${field("部門/分級","d_dept","text",e.分級,true)}</div><div>${field("職稱","d_title","text",e.title,true)}</div></div>
-  `):""}
-  ${isAdmin()?card("💰","薪資／投保（僅管理員可見）",`
-    <div class="row2"><div>${field("月薪/時薪","d_salary","text","",false)}</div><div>${field("投保級距","d_ins","text","",false)}</div></div>
-  `):""}
+  <div class="note">👤 <b>${e.name}</b>（${e.employee_id}）完整資料${isAdmin()?"（管理員檢視＝全部欄位）":"（依你的可見範圍）"}；<span class="miss-tag">未填寫</span> 欄位淡紅提示。</div>
+  ${secs.map(g=>card("📄",g.sec,
+    g.fields.map(([lbl,key])=>{
+      const val=d[key]||"";
+      return `<label>${lbl}${val?"":'<span class="miss-tag">未填寫</span>'}</label>
+        <input class="${val?'':'miss'}" value="${esc(val)}" placeholder="${val?'':'尚未填寫'}">`;
+    }).join("")
+  )).join("")}
   <button class="btn" onclick="toast('已送出 ✓（示範模式：正式版寫入 staging 待管理員核准）')">儲存異動</button>`;
 }
 function approveStaging(id,ok){
   const s=DB.staging.find(x=>x.id===id);
   s.狀態=ok?"已生效":"退回";
+  if(ok&&DB.details[s.工號])DB.details[s.工號][s.欄位]=s.新值;
+  state.expandedStaging=null;
   render();toast(ok?"已核准 ✓（正式版：自動合併進 employees.json）":"已退回");
 }
 
@@ -408,11 +521,10 @@ function pinDone(){
   }
 }
 
-// ================= ⚙️ Settings（管理員） =================
+// ================= ⚙️ 設定（管理員；底部分頁最右） =================
 function settingsView(){
   if(!isAdmin())return boardView();
   return `
-  <button class="btn sec" style="margin-bottom:12px" onclick="go('board')">← 返回</button>
   ${card("👑","管理員／主管名單",`
     ${DB.roles.filter(r=>r.角色!=="員工").map(r=>`
       <div class="set-row">
@@ -464,7 +576,7 @@ function removeRole(name){
 function card(ic,t,inner){return `<div class="card"><div class="sec"><span class="ic">${ic}</span>${t}</div>${inner}</div>`;}
 function field(lbl,id,type,val,req,hint){
   return `<label>${lbl}${req?'<span class="req">＊</span>':''}</label>
-    <input id="${id}" type="${type}" value="${val||''}">
+    <input id="${id}" type="${type}" value="${esc(val||'')}">
     ${hint?`<div class="hint">${hint}</div>`:''}`;
 }
 
