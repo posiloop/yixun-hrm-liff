@@ -85,7 +85,66 @@ input.miss{border-color:#f0c5c0;background:#fdf1f0;}
 .stg-full .fr.diff{background:#fff3cd;border-radius:8px;padding:6px 8px;border-bottom:none;}
 .stg-full .fr.diff .fv b{color:var(--g);}
 .stg-full .fr.diff .old{color:var(--err);text-decoration:line-through;margin-right:6px;}
-.dep-row{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;background:#fcfdfc;}
+.dep-row{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;background:#fcfdfc;animation:pop .28s ease both;}
+input[type=date]{min-height:44px;-webkit-appearance:none;appearance:none;background:#fcfdfc;}
+/* ===== 第三輪：可愛年輕化 + 陰影 + 動畫 ===== */
+@keyframes cardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+@keyframes pop{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:none;}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-2.5px);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+body{background:radial-gradient(120% 60% at 50% 0,#eaf5e7 0,var(--bg) 60%);}
+.card{box-shadow:0 6px 18px rgba(46,114,39,.07),0 1.5px 4px rgba(0,0,0,.03);border-radius:18px;animation:cardIn .32s cubic-bezier(.2,.8,.25,1) both;}
+.post{border-radius:16px;box-shadow:0 4px 14px rgba(46,114,39,.06);animation:cardIn .3s ease both;}
+.emp{border-radius:15px;box-shadow:0 3px 10px rgba(46,114,39,.05);transition:transform .15s,box-shadow .15s;animation:cardIn .28s ease both;}
+.emp:active{transform:scale(.98);}
+.sec{font-size:16px;}
+.sec .ic{width:24px;height:24px;border-radius:9px;box-shadow:0 3px 7px rgba(46,114,39,.25);animation:floaty 3.6s ease-in-out infinite;}
+.btn{border-radius:14px;box-shadow:0 5px 13px rgba(46,114,39,.20);transition:transform .12s,box-shadow .12s,background .15s;}
+.btn:active{transform:translateY(1px) scale(.985);box-shadow:0 2px 6px rgba(46,114,39,.16);}
+.btn.sec{box-shadow:0 3px 9px rgba(46,114,39,.09);}
+.btn.warn{box-shadow:0 3px 9px rgba(192,57,43,.13);}
+.btn.sm{box-shadow:0 2px 6px rgba(46,114,39,.14);}
+header{box-shadow:0 5px 16px rgba(46,114,39,.20);border-radius:0 0 20px 20px;}
+header img{filter:drop-shadow(0 2px 3px rgba(0,0,0,.18));}
+.tabbar{border-radius:22px 22px 0 0;}
+.tabbar button .i{transition:transform .2s cubic-bezier(.2,.9,.3,1.3);}
+.tabbar button.on .i{transform:translateY(-2px) scale(1.18);}
+.chip{transition:transform .12s,background .15s,box-shadow .15s;}
+.chip:active{transform:scale(.94);}
+.chip.on{box-shadow:0 3px 8px rgba(46,114,39,.22);}
+.toast{animation:toastIn .3s ease;border-radius:24px;box-shadow:0 10px 26px rgba(0,0,0,.3);}
+.badge{box-shadow:0 1px 3px rgba(0,0,0,.05);}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(58,138,49,.12);}
+/* 子分頁 pills（我的資料分區） */
+.subtabs{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.subtabs::-webkit-scrollbar{display:none;}
+.subtabs button{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;border-radius:22px;padding:8px 15px;font-size:13px;font-weight:800;color:var(--muted);font-family:inherit;white-space:nowrap;transition:transform .12s;box-shadow:0 2px 6px rgba(46,114,39,.05);}
+.subtabs button:active{transform:scale(.95);}
+.subtabs button.on{background:linear-gradient(135deg,var(--g),var(--g2));border-color:var(--g);color:#fff;box-shadow:0 4px 12px rgba(46,114,39,.28);}
+.subtabs .ok{color:var(--g2);font-weight:900;}
+.subtabs button.on .ok{color:#d3f0d0;}
+/* 彈窗 modal */
+.modal-mask{position:fixed;inset:0;background:rgba(20,30,18,.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:24px;animation:fadeIn .2s ease;}
+.modal-box{background:#fff;border-radius:22px;max-width:340px;width:100%;padding:24px 20px 18px;box-shadow:0 20px 54px rgba(0,0,0,.32);animation:pop .26s cubic-bezier(.2,.9,.3,1.25);text-align:center;}
+.modal-box .mi{font-size:42px;margin-bottom:6px;display:block;animation:floaty 2.6s ease-in-out infinite;}
+.modal-box .mt{font-weight:800;font-size:17.5px;margin-bottom:7px;}
+.modal-box .mm{font-size:13.5px;color:var(--muted);margin-bottom:18px;line-height:1.6;}
+.modal-box .mrow{display:flex;gap:10px;}.modal-box .mrow .btn{margin:0;}
+/* 證件上傳 */
+.doc-prog{font-size:12.5px;font-weight:800;color:var(--g);background:#eef4ec;border-radius:20px;padding:4px 14px;display:inline-block;margin-bottom:10px;}
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.doc-item{border:1.5px dashed var(--line);border-radius:14px;padding:12px 8px 10px;text-align:center;background:#fcfdfc;position:relative;overflow:hidden;transition:border-color .15s,background .15s;}
+.doc-item.has{border-style:solid;border-color:var(--g2);background:#f4faf2;}
+.doc-item .dlabel{font-size:12.5px;font-weight:800;color:#3a463a;}
+.doc-item .dstate{font-size:11px;color:var(--muted);margin-top:3px;}
+.doc-item.has .dstate{color:var(--g2);font-weight:700;}
+.doc-item img{width:100%;height:68px;object-fit:cover;border-radius:9px;margin-top:8px;}
+.doc-item input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.doc-chk{display:flex;gap:6px;flex-wrap:wrap;}
+.doc-chk .d{font-size:11.5px;border-radius:20px;padding:3px 11px;font-weight:700;background:#f1f4f0;color:var(--muted);}
+.doc-chk .d.ok{background:#eaf6e8;color:var(--g);}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;}}
 </style>
 </head>
 <body>
@@ -106,6 +165,7 @@ input.miss{border-color:#f0c5c0;background:#fdf1f0;}
 </nav>
 
 <div class="toast" id="toast"></div>
+<div id="modalRoot"></div>
 <div class="dev">測試身分
   <select id="devRole" onchange="setRole(this.value)">
     <option value="employee">員工(鴻海)</option>
@@ -180,6 +240,11 @@ const FIELD_DEFS = [
   {sec:"健保眷屬", mgrHidden:true, custom:"deps"},
   {sec:"薪資／投保（僅管理員）", adminOnly:true, fields:[["薪資","salary"],["投保","insurance"]]},
 ];
+// 選填欄位（不顯示「未填寫」紅標）
+const OPT_KEYS = new Set(["note","branch"]);
+// 證件上傳項目
+const DOC_DEFS = [["身分證正面","id_front"],["身分證反面","id_back"],["存摺封面","bank_book"],["體檢報告","health_check"]];
+function docCount(d){const o=(d&&d.docs)||{};return DOC_DEFS.filter(([_,k])=>o[k]).length;}
 
 const DEMO_IDENTITY = {
   employee: {userId:"U_demo_emp", name:"王小明", 工號:"E24P0506", role:"員工", sites:["鴻海"], approved:true},
@@ -191,7 +256,8 @@ const DEMO_IDENTITY = {
 let state = { tab:"board", devRole:"employee", me:DEMO_IDENTITY.employee,
   appUnlocked:false, pinBuf:"", pinStage:null, pinTmp:"", savedPin:{},
   composing:false, editingPost:null, reordering:false, viewSlip:null, editingEmp:null,
-  boardSite:"ALL", expandedStaging:null, rosterFilter:"ALL", terminating:false, confirmDel:null };
+  boardSite:"ALL", expandedStaging:null, rosterFilter:"ALL", terminating:false,
+  profTab:null, profDraft:{}, modal:null };
 
 // ================= 工具 =================
 const $=(s)=>document.querySelector(s);
@@ -212,7 +278,8 @@ function setRole(r){
 function clearSubs(){
   state.composing=false; state.editingPost=null; state.reordering=false;
   state.viewSlip=null; state.editingEmp=null; state.expandedStaging=null;
-  state.terminating=false; state.confirmDel=null;
+  state.terminating=false; state.modal=null;
+  state.profTab=null; state.profDraft={};
 }
 function go(t){ state.tab=t; clearSubs(); render(); }
 
@@ -230,8 +297,29 @@ function render(){
   const v = { board:boardView, profile:profileView, payslip:payslipView, settings:settingsView }[state.tab] || boardView;
   $("#app").innerHTML = v();
   if(state.reordering)bindSort();
+  updateModal();
 }
 function backBtn(label){return `<button class="btn sec back-sticky" onclick="history.back()">← ${label}</button>`;}
+
+// ================= 彈窗確認 modal =================
+function modalConfirm(o){state.modal=o;updateModal();}
+function updateModal(){
+  const r=$("#modalRoot"); if(!r)return;
+  const m=state.modal;
+  if(!m){r.innerHTML="";return;}
+  r.innerHTML=`<div class="modal-mask" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <span class="mi">${m.icon||"⚠️"}</span>
+      <div class="mt">${esc(m.title||"")}</div>
+      <div class="mm">${m.msg||""}</div>
+      <div class="mrow">
+        <button class="btn sec" onclick="closeModal()">${esc(m.cancelText||"取消")}</button>
+        <button class="btn ${m.okClass||"warn"}" onclick="modalOk()">${esc(m.okText||"確定")}</button>
+      </div>
+    </div></div>`;
+}
+function closeModal(){state.modal=null;updateModal();}
+function modalOk(){const cb=state.modal&&state.modal.onOk;state.modal=null;updateModal();if(cb)cb();}
 
 // ================= 🔒 全站 PIN（審核通過後才啟用） =================
 function pinView(){
@@ -249,13 +337,13 @@ function pinView(){
   return `<div class="card pinpad">
     <div class="sec" style="justify-content:center"><span class="ic">🔒</span>${titles[stage]}</div>
     <div class="dots">${"●".repeat(state.pinBuf.length)}${"○".repeat(4-state.pinBuf.length)}</div>
-    <div class="grid">${[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map(k=>k===""?"<span></span>":`<button onclick="pinKey('${k}')">${k}</button>`).join("")}</div>
+    <div class="grid">${[1,2,3,4,5,6,7,8,9,"",0,"←"].map(k=>k===""?"<span></span>":`<button onclick="pinKey('${k}')">${k}</button>`).join("")}</div>
     ${stage==="enter"?`<button class="btn sec" style="max-width:260px;margin:16px auto 0;display:block" onclick="state.pinStage='forgot';render()">忘記 PIN 碼？</button>`:""}
     <div class="hint" style="margin-top:14px">通過審核的帳號需以 PIN 保護個人與薪資資料</div>
   </div>`;
 }
 function pinKey(k){
-  if(k==="⌫"){state.pinBuf=state.pinBuf.slice(0,-1);render();return;}
+  if(k==="←"){state.pinBuf=state.pinBuf.slice(0,-1);render();return;}
   if(state.pinBuf.length>=4)return;
   state.pinBuf+=k;
   if(state.pinBuf.length===4)setTimeout(pinDone,150);
@@ -307,25 +395,23 @@ function boardView(){
 }
 function postCard(p){
   const canEdit=isAdmin()||(isMgr()&&p.分級.some(s=>state.me.sites.includes(s)));
-  const confirming=state.confirmDel===p.id;
   return `<div class="post">
     <div class="pt">${esc(p.標題)}</div>
     <div class="pm">${p.分級.map(s=>`<span class="tag">${s}</span>`).join(" ")}　${esc(p.發佈人)}・${p.時間}</div>
     <div class="pb">${esc(p.內文)}</div>
     ${canEdit?`<div class="tools">
       <button class="btn sec sm" onclick="editPost('${p.id}')">✏️ 編輯</button>
-      <button class="btn warn sm" onclick="delPost('${p.id}')">${confirming?"⚠️ 再按一次確認刪除":"🗑️ 刪除"}</button>
+      <button class="btn warn sm" onclick="delPost('${p.id}')">🗑️ 刪除</button>
     </div>`:""}
   </div>`;
 }
 function delPost(id){
-  if(state.confirmDel!==id){
-    state.confirmDel=id;render();
-    setTimeout(()=>{if(state.confirmDel===id){state.confirmDel=null;render();}},3000);
-    return;
-  }
-  const p=DB.bulletins.find(x=>x.id===id);p.狀態="deleted";
-  state.confirmDel=null;render();toast("已刪除");
+  const p=DB.bulletins.find(x=>x.id===id);
+  if(!p)return;
+  modalConfirm({icon:"🗑️",title:"刪除公告",
+    msg:`確定要刪除「${esc(p.標題)}」嗎？<br>此動作無法復原。`,
+    okText:"刪除",okClass:"warn",
+    onOk:()=>{p.狀態="deleted";render();toast("已刪除");}});
 }
 // ---- 拖曳排序 ----
 function reorderView(){
@@ -422,50 +508,140 @@ function profileView(){
   if(isMgr())return mgrProfileView();
   return empFormView();
 }
-function empFormView(){
+// ---- 我的資料：分頁標籤（每區一張卡，切換不遺失已填內容） ----
+function profSections(){
   const vis=DB.settings.field_visibility_employee;
+  return [
+    {key:"基本資料",ic:"👤"},{key:"緊急聯絡人",ic:"🆘"},{key:"薪轉帳戶",ic:"🏦"},
+    {key:"健保眷屬",ic:"👨‍👩‍👧"},{key:"證件上傳",ic:"📎"},
+  ].filter(s=>vis.includes(s.key));
+}
+function empFormView(){
+  const secs=profSections();
+  if(!secs.length)return '<div class="note">目前沒有可編輯的資料區塊</div>';
+  if(!state.profTab||!secs.find(s=>s.key===state.profTab))state.profTab=secs[0].key;
   const d=DB.details[state.me.工號]||{};
-  const deps=(d.deps||[]);
+  const cur=state.profTab;
+  const tabs=`<div class="subtabs">${secs.map(s=>{
+    const done=sectionDone(s.key,d);
+    return `<button class="${cur===s.key?"on":""}" onclick="switchProfTab('${s.key}')">${s.ic} ${s.key}${done?' <span class="ok">✓</span>':""}</button>`;
+  }).join("")}</div>`;
   return `
-  <div class="note">📋 填寫／更新您的個人資料。送出後會進入審核，管理員核准才正式生效。</div>
-  ${vis.includes("基本資料")?card("👤","基本資料",`
+  <div class="note">📋 填寫／更新您的個人資料，上方切換分區。送出後進入審核，管理員核准才正式生效。</div>
+  ${tabs}
+  ${profSectionCard(cur,d)}
+  <button class="btn" onclick="submitProfile()">送出（進入審核）</button>`;
+}
+function profSectionCard(sec,d){
+  if(sec==="基本資料")return card("👤","基本資料",`
     ${field("姓名","f_name","text",d.name,true)}
     ${field("身分證字號","f_id","text",d.national_id,true,"輸入後自動檢核")}
-    <div class="row2"><div>${field("出生年月日","f_dob","text",d.dob,true,"民國或西元皆可")}</div><div>
-      <label>血型<span class="req">＊</span></label>
-      <select id="f_blood">${["A","B","O","AB","不確定"].map(b=>`<option ${d.blood===b?"selected":""}>${b}</option>`).join("")}</select>
-    </div></div>
+    <div class="row2"><div>${field("出生年月日","f_dob","date",d.dob,true)}</div><div>${bloodField(d)}</div></div>
     <div class="row2"><div>${field("手機","f_phone","tel",d.phone,true)}</div><div>${field("Email","f_email","email",d.email,true)}</div></div>
-    ${field("戶籍/通訊地址","f_addr","text",d.address,true)}
-  `):""}
-  ${vis.includes("緊急聯絡人")?card("🆘","緊急聯絡人",`
+    ${field("戶籍/通訊地址","f_addr","text",d.address,true)}`);
+  if(sec==="緊急聯絡人")return card("🆘","緊急聯絡人",`
     <div class="row2"><div>${field("姓名","f_ecn","text",d.ec_name,true)}</div><div>${field("關係","f_ecr","text",d.ec_relation,true)}</div></div>
-    ${field("聯絡電話","f_ecp","tel",d.ec_phone,true)}
-  `):""}
-  ${vis.includes("薪轉帳戶")?card("🏦","薪轉帳戶",`
-    <div class="row2"><div><label>銀行<span class="req">＊</span></label>
-      <select id="f_bank"><option>國泰世華銀行</option><option>玉山銀行</option><option>元大銀行</option><option>中國信託</option><option>郵局</option></select>
-    </div><div>${field("分行","f_branch","text","",false)}</div></div>
-    ${field("帳號","f_acct","text",d.account_number,true,"純數字")}
-  `):""}
-  ${vis.includes("健保眷屬")?card("👨‍👩‍👧","健保眷屬（依附投保，沒有可略過）",`
-    <div id="depList">${deps.map((x,i)=>depRow(x,i)).join("")}</div>
-    <button class="btn sec" onclick="addDep()">➕ 新增眷屬</button>
-    <div class="hint">眷屬資料僅管理員與您本人可見</div>
-  `):""}
-  ${vis.includes("證件上傳")?card("📎","證件上傳",`<div class="hint">身分證正反面／存摺封面／體檢報告（正式版可拍照上傳，示範模式略）</div>`):""}
-  <button class="btn" onclick="toast('已送出審核 ✓（示範模式：正式版進入 待審 → 管理員核准 → 寫入 employees.json）')">送出（進入審核）</button>`;
+    ${field("聯絡電話","f_ecp","tel",d.ec_phone,true)}`);
+  if(sec==="薪轉帳戶")return card("🏦","薪轉帳戶",`
+    <div class="row2"><div><label>銀行<span class="req">＊</span></label>${bankSelect(d)}</div>
+      <div>${field("分行","f_branch","text",d.branch,false,"選填")}</div></div>
+    ${field("帳號","f_acct","text",d.account_number,true,"純數字")}`);
+  if(sec==="健保眷屬"){
+    const deps=(d.deps||[]);
+    return card("👨‍👩‍👧","健保眷屬（依附投保，沒有可略過）",`
+      <div id="depList">${deps.length?deps.map((x,i)=>depRow(x,i)).join(""):'<div class="hint">目前沒有眷屬，點下方新增</div>'}</div>
+      <button class="btn sec" onclick="addDep()">➕ 新增眷屬</button>
+      <div class="hint">眷屬資料僅管理員與您本人可見</div>`);
+  }
+  if(sec==="證件上傳")return card("📎","證件上傳",docUploadHtml(d));
+  return "";
+}
+function bloodField(d){
+  const bd=state.profDraft.f_blood!=null?state.profDraft.f_blood:(d.blood||"");
+  const std=["A","B","O","AB"];
+  const isOther=!!bd&&!std.includes(bd);
+  const otherVal=state.profDraft.f_blood_other!=null?state.profDraft.f_blood_other:(isOther?bd:"");
+  return `<label>血型</label>
+    <select id="f_blood" onchange="bloodChange()">
+      <option value=""${!bd?" selected":""}>請選擇</option>
+      ${std.map(b=>`<option ${bd===b?"selected":""}>${b}</option>`).join("")}
+      <option value="其他"${isOther?" selected":""}>其他</option>
+    </select>
+    <input id="f_blood_other" placeholder="請自行填寫血型" value="${esc(otherVal)}" class="${isOther?"":"hide"}" style="margin-top:6px">`;
+}
+function bloodChange(){
+  const sel=$("#f_blood"),oth=$("#f_blood_other");
+  if(!sel||!oth)return;
+  const other=sel.value==="其他";
+  oth.classList.toggle("hide",!other);
+  if(other)oth.focus();
+}
+function bankSelect(d){
+  const cur=state.profDraft.f_bank!=null?state.profDraft.f_bank:(d.bank_name||"國泰世華銀行");
+  return `<select id="f_bank">${["國泰世華銀行","玉山銀行","元大銀行","中國信託","郵局"].map(b=>`<option ${cur===b?"selected":""}>${b}</option>`).join("")}</select>`;
 }
 function depRow(x,i){
   return `<div class="dep-row">
     <div class="row2"><div>${field("眷屬姓名","dep_n_"+i,"text",x.n,false)}</div><div>${field("關係","dep_r_"+i,"text",x.r,false)}</div></div>
-    ${field("眷屬生日","dep_d_"+i,"text",x.d,false,"西元 YYYY-MM-DD")}
+    ${field("眷屬生日","dep_d_"+i,"date",x.d,false)}
   </div>`;
 }
+function harvestProf(){
+  document.querySelectorAll("#app input,#app select,#app textarea").forEach(el=>{
+    if(el.id&&el.type!=="file")state.profDraft[el.id]=el.value;
+  });
+}
+function switchProfTab(sec){harvestProf();state.profTab=sec;render();}
 function addDep(){
+  harvestProf();
   const d=DB.details[state.me.工號]||(DB.details[state.me.工號]={});
   (d.deps||(d.deps=[])).push({n:"",r:"",d:""});
   render();
+}
+function submitProfile(){
+  harvestProf();
+  toast("已送出審核 ✓（示範模式：正式版進入 待審 → 管理員核准 → 寫入 employees.json）");
+}
+function sectionDone(key,d){
+  const val=(id,dk)=>{const dv=state.profDraft[id];return String(dv!=null?dv:(d[dk]||"")).trim();};
+  if(key==="基本資料")return !!(val("f_name","name")&&val("f_id","national_id")&&val("f_dob","dob")&&val("f_phone","phone")&&val("f_addr","address"));
+  if(key==="緊急聯絡人")return !!(val("f_ecn","ec_name")&&val("f_ecr","ec_relation")&&val("f_ecp","ec_phone"));
+  if(key==="薪轉帳戶")return !!val("f_acct","account_number");
+  if(key==="健保眷屬")return true;
+  if(key==="證件上傳")return docCount(d)>=DOC_DEFS.length;
+  return false;
+}
+// ---- 證件上傳（拍照/選圖，示範模式存 dataURL；完成度可視） ----
+function docUploadHtml(d){
+  const o=d.docs||{}, n=docCount(d);
+  return `<div class="doc-prog">已上傳 ${n}/${DOC_DEFS.length}</div>
+    <div class="doc-grid">${DOC_DEFS.map(([lbl,k])=>{
+      const has=o[k];
+      return `<label class="doc-item ${has?"has":""}">
+        <div class="dlabel">${lbl}</div>
+        <div class="dstate">${has?"✓ 已上傳":"點此上傳／拍照"}</div>
+        ${has&&has.url?`<img src="${has.url}" alt="">`:""}
+        <input type="file" accept="image/*" onchange="docUpload('${k}',this)">
+      </label>`;
+    }).join("")}</div>
+    <div class="hint">身分證正反面／存摺封面／體檢報告；手機可直接拍照。資料僅管理員與您本人可見。</div>`;
+}
+function docUpload(k,input){
+  const f=input.files&&input.files[0];
+  if(!f)return;
+  if(f.size>8*1024*1024){toast("圖片過大（上限 8MB）");input.value="";return;}
+  const d=DB.details[state.me.工號]||(DB.details[state.me.工號]={});
+  const r=new FileReader();
+  r.onload=e=>{harvestProf();(d.docs||(d.docs={}))[k]={name:f.name,url:e.target.result};render();toast("已上傳 ✓");};
+  r.readAsDataURL(f);
+}
+// 主管／管理員檢視：證件上傳完成度可視（管理員另可看縮圖）
+function docStatusHtml(d){
+  const o=d.docs||{}, n=docCount(d);
+  const showImg=isAdmin()&&n>0;
+  return card("📎","證件上傳　"+n+"/"+DOC_DEFS.length,
+    `<div class="doc-chk">${DOC_DEFS.map(([lbl,k])=>`<span class="d ${o[k]?"ok":""}">${o[k]?"✓":"✗"} ${lbl}</span>`).join("")}</div>`+
+    (showImg?`<div class="doc-grid" style="margin-top:10px">${DOC_DEFS.filter(([_,k])=>o[k]&&o[k].url).map(([lbl,k])=>`<div class="doc-item has"><div class="dlabel">${lbl}</div><img src="${o[k].url}" alt=""></div>`).join("")}</div>`:""));
 }
 function mgrProfileView(){
   if(state.editingEmp)return empDetailView();
@@ -520,20 +696,26 @@ function fullRecordHtml(empId,changedKey,oldV,newV){
     g.fields.forEach(([lbl,key])=>{
       const isDiff=key===changedKey;
       const val=d[key];
+      const opt=OPT_KEYS.has(key);
       rows.push(`<div class="fr ${isDiff?'diff':''}">
         <span class="fk">${lbl}</span>
-        <span class="fv">${isDiff?`<span class="old">${esc(oldV)}</span><b>${esc(newV)}</b>`:(val?esc(val):'<span class="miss-tag">未填寫</span>')}</span>
+        <span class="fv">${isDiff?`<span class="old">${esc(oldV)}</span><b>${esc(newV)}</b>`:(val?esc(val):(opt?'<span class="hint">—</span>':'<span class="miss-tag">未填寫</span>'))}</span>
       </div>`);
     });
   });
   return rows.join("");
 }
 function empRow(e,isSelf){
+  const dc=docCount(DB.details[e.employee_id]||{});
+  const docBadge=e.terminated?"":`<span class="badge ${dc>=DOC_DEFS.length?'':'warn'}">證件 ${dc}/${DOC_DEFS.length}</span>`;
   return `<div class="emp ${isSelf?'self':''} ${e.terminated?'term':''}" onclick="enterSub(()=>{state.editingEmp='${e.employee_id}';})">
     <div class="av">${e.name[0]}</div>
     <div class="info"><div class="nm">${e.name}${isSelf?' <span class="badge amber">我</span>':''} <span class="badge">${e.employment_type}</span>${e.terminated?` <span class="badge warn">離職 ${e.term_date}</span>`:''}</div>
       <div class="meta">${e.分級}・${e.title}・${e.employee_id}</div></div>
-    ${e.terminated?"":(e.done?'<span class="badge">已填</span>':'<span class="badge warn">待填</span>')}
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">
+      ${e.terminated?"":(e.done?'<span class="badge">已填</span>':'<span class="badge warn">待填</span>')}
+      ${docBadge}
+    </div>
     <div style="color:#bbb">›</div></div>`;
 }
 function filterRoster(q){
@@ -566,10 +748,12 @@ function empDetailView(){
     return card("📄",g.sec,
       g.fields.map(([lbl,key])=>{
         const val=d[key]||"";
-        return `<label>${lbl}${val?"":'<span class="miss-tag">未填寫</span>'}</label>
-          <input class="${val?'':'miss'}" value="${esc(val)}" placeholder="${val?'':'尚未填寫'}">`;
+        const opt=OPT_KEYS.has(key);
+        return `<label>${lbl}${(val||opt)?"":'<span class="miss-tag">未填寫</span>'}</label>
+          <input class="${(val||opt)?'':'miss'}" value="${esc(val)}" placeholder="${val?'':(opt?'選填':'尚未填寫')}">`;
       }).join(""));
   }).join("")}
+  ${docStatusHtml(d)}
   ${isAdmin()&&!e.terminated?(state.terminating?terminateForm(e):`<button class="btn warn" onclick="state.terminating=true;render()">🚪 辦理離職</button>`):""}
   <button class="btn" onclick="toast('已送出 ✓（示範模式：正式版寫入 staging 待管理員核准）')">儲存異動</button>`;
 }
@@ -692,8 +876,9 @@ function removeRole(name){
 // ================= 元件 =================
 function card(ic,t,inner){return `<div class="card"><div class="sec"><span class="ic">${ic}</span>${t}</div>${inner}</div>`;}
 function field(lbl,id,type,val,req,hint){
+  const v=state.profDraft[id]!=null?state.profDraft[id]:(val||'');
   return `<label>${lbl}${req?'<span class="req">＊</span>':''}</label>
-    <input id="${id}" type="${type}" value="${esc(val||'')}">
+    <input id="${id}" type="${type||'text'}" value="${esc(v)}">
     ${hint?`<div class="hint">${hint}</div>`:''}`;
 }
 
